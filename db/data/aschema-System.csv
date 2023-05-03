@@ -1,0 +1,4 @@
+SystemID,SystemName,SystemDescription
+1,"Referenzsystem","Alle Module sind im Referenzsystem enthalten."
+2,"CUS1","Kundensystem1 - Nur DST"
+3,"CUS2","Kundensystem2 - DST VAR ECR"

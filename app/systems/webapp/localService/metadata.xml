@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="MainMyService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="System" EntityType="MainMyService.System">
+                    <NavigationPropertyBinding Path="Modu" Target="Modul"/>
+                </EntitySet>
+                <EntitySet Name="Modul" EntityType="MainMyService.Modul">
+                    <NavigationPropertyBinding Path="Syst" Target="System"/>
+                </EntitySet>
+            </EntityContainer>
+            <EntityType Name="System">
+                <Key>
+                    <PropertyRef Name="SystemID"/>
+                </Key>
+                <Property Name="SystemID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="SystemName" Type="Edm.String"/>
+                <Property Name="SystemDescription" Type="Edm.String"/>
+                <Property Name="SystemVersion" Type="Edm.Int32"/>
+                <NavigationProperty Name="Modu" Type="MainMyService.Modul" Partner="Syst">
+                    <ReferentialConstraint Property="Modu_ModulID" ReferencedProperty="ModulID"/>
+                </NavigationProperty>
+                <Property Name="Modu_ModulID" Type="Edm.Int32"/>
+            </EntityType>
+            <EntityType Name="Modul">
+                <Key>
+                    <PropertyRef Name="ModulID"/>
+                </Key>
+                <Property Name="ModulID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="ModulName" Type="Edm.String"/>
+                <Property Name="ModulDescription" Type="Edm.String"/>
+                <NavigationProperty Name="Syst" Type="Collection(MainMyService.System)" Partner="Modu"/>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
