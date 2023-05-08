@@ -12,7 +12,7 @@ entity System {
 }
 
 entity Modul {
-    key ModulID          : Integer;
+    key ModulID          : UUID;
         ModulName        : String;
         ModulDescription : String;
         System           : Association to one System;
@@ -21,7 +21,7 @@ entity Modul {
 }
 
 entity Feature {
-    key FeatureID          : Integer;
+    key FeatureID          : UUID;
         FeatureName        : String;
         FeatureDescription : String;
         Modul              : Association to one Modul;

@@ -6,13 +6,13 @@ service MainMyService {
     };
 
     annotate System with @odata.draft.enabled; //Bearbeitung der Einzelansicht ermöglicht
-    
-    entity Modul   as projection on aschema.Modul;
-    entity Feature as projection on aschema.Feature;
-}
-
-annotate MainMyService.System with @(UI.Identification: [{
+    annotate System with @(UI.Identification: [{
     $Type : 'UI.DataFieldForAction',
     Label : 'Process Import File',
     Action: 'MainMyService.processImportFile'
 }]);
+    entity Modul   as projection on aschema.Modul;
+    entity Feature as projection on aschema.Feature;
+}
+
+
