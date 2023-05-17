@@ -1,4 +1,4 @@
 FeatureID,FeatureName,FeatureDescription,Modul_ModulID
-1,F1,Feature One,1
-2,F2,Feature Two,1
-3,F3,Feature Three,2
+1c5328d7-af4c-4c6e-8cb1-ef7c7bf4470c,F1,Feature One,3a62e3a2-0f1a-4c05-b640-94e1fa9e903f
+7ddc2cc3-02a5-4224-98eb-f83d89d0fa6a,F2,Feature Two,3a62e3a2-0f1a-4c05-b640-94e1fa9e903f
+b4d77f85-81e1-4378-9d28-bd59c83efb9b,F3,Feature Three,6b9e3ec4-3fa4-4eb1-95db-9b42fb81bb84

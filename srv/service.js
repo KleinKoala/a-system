@@ -1,51 +1,55 @@
-//import cds from '@sap/cds';
-
 const cds = require('@sap/cds');
-
 
 module.exports = async srv => {
     const db = await cds.connect.to ('db');
-    
-    srv.on('processImportFile','System',  async (data) => {
-        const { System, Modul, Feature } = db.entities();
-        console.log(System)
-        let system = await db.read(System).where({SystemID: 1});
-        let sysobj = JSON.parse(system[0].ImportFile.toString());        
+    const { System, Modul, Feature } = db.entities();
 
-        sysobj.details.components.forEach(modul => {
-            console.log(modul.id);
-            
-            INSERT.into(Modul).entries({
-                //ModulID : UUID() ,
-                ModulName: modul.id,
-                ModulDescription: modul.description
-            })
-            /*
-            INSERT.into (Modul, modul ,{
-                ModulName: modul.id,
-                ModulDescription: modul.description
-            })            
-            */
-           //console.log(Modul);
-            modul.features.forEach(feature => {
-                
-                
-                
-                INSERT.into (Feature).entries({
-                    //FeatureID : UUID(),
-                    FeatureName: feature.name,
-                    FeatureDescription: feature.title
+    srv.on('processImportFile','System',  async () => {
+        let system = await db.read(System).where({SystemID: 1});
+        let sysobj = JSON.parse(system[0].ImportFile.toString());
+        
+        try {
+            //let insertAll = await db.run (
+                sysobj.details.components.forEach(modul => {
+                    let insertModul = INSERT.into(Modul).entries({
+                        ModulName: modul.id,
+                        ModulDescription: modul.description
+                    })
+                    //let ntries = insertModul.entries()
+                    let resMod = db.run(insertModul);
+                    
+                     //let extraRes = insertModul.affectedRows();
+                    
+                    console.log('inserted modul: ' +  modul.id);
+                    //console.log();
+
+                    modul.features.forEach(feature => {
+                        
+                        let insertFeature = INSERT.into (Feature).entries({
+                            FeatureName: feature.name,
+                            FeatureDescription: feature.title
+                        })
+                        let resFeat = db.run(insertFeature).catch(err => {console.log(err)})
+
+                        /*
+                       db.insert(Feature).entries({
+                            FeatureName: feature.name,
+                            FeatureDescription: feature.title
+                        })
+                        */  
+
+                        console.log('inserted feature: ' + feature.name)               
+                    });
                 })
-                /*
-                console.log(feature.name)
-                console.log(feature)
-                */
-            });
-        });
-        //let testing = await db.read(Modul).where(ModulName = 'ilc.aut.cal.managecalculation').then(console.log(testing), e => e.message)
-        //console.log (system)
-        //console.log(sysobj);
+            //); 
+            
+        }
+        catch (err) {
+            console.log(err);
+        }
+        
         
         
     })
+    
 }
