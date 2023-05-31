@@ -7,7 +7,22 @@ module.exports = async srv => {
     srv.on('processImportFile','System',  async () => {
         let system = await db.read(System).where({SystemID: 1});
         let sysobj = JSON.parse(system[0].ImportFile.toString());
+        //modulName,modulDescription,featureList:[{}]    ->result initparams
+        let result = []
         
+        sysobj.details.components.forEach(modul => {
+            let retModulName = modul.id
+            let retModulDescription = modul.description
+            let retFeatureArr = modul.features.map(m => m)
+
+            let retModul = {ModulName: retModulName, ModulDescription: retModulDescription, System_SystemID: 1}
+            result.push(retModul)
+        });
+
+        let q = db.run(INSERT(result).into(Modul)) //ist quatsch weil 'result' nicht der Datenstruktur entspricht
+         
+        
+        /*
         try {
             //let insertAll = await db.run (
                 sysobj.details.components.forEach(modul => {
@@ -31,12 +46,12 @@ module.exports = async srv => {
                         })
                         let resFeat = db.run(insertFeature).catch(err => {console.log(err)})
 
-                        /*
-                       db.insert(Feature).entries({
-                            FeatureName: feature.name,
-                            FeatureDescription: feature.title
-                        })
-                        */  
+                        
+                       //db.insert(Feature).entries({
+                       //     FeatureName: feature.name,
+                       //     FeatureDescription: feature.title
+                       // })
+                         
 
                         console.log('inserted feature: ' + feature.name)               
                     });
@@ -48,8 +63,7 @@ module.exports = async srv => {
             console.log(err);
         }
         
-        
-        
+        */
     })
     
 }
