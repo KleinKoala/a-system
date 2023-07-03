@@ -5,7 +5,7 @@ entity System {
         SystemName        : String;
         SystemDescription : String;
         SystemVersion     : Integer;
-        ImportFile        : LargeBinary @Core.MediaType: 'application/json' @Core.ContentDisposition.Filename: 'inline' @Core.ContentDisposition.Type: 'inline';
+        ImportFile        : LargeBinary  @Core.MediaType: 'application/json'  @Core.ContentDisposition.Filename: 'inline'  @Core.ContentDisposition.Type: 'inline';
         Modules           : Composition of many Modul
                                 on Modules.System = $self;
 

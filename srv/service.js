@@ -1,69 +1,42 @@
-const cds = require('@sap/cds');
+const cds = require("@sap/cds");
 
-module.exports = async srv => {
-    const db = await cds.connect.to ('db');
-    const { System, Modul, Feature } = db.entities();
+module.exports = async (srv) => {
+  const db = await cds.connect.to("db");
+  const { System, Modul, Feature } = db.entities();
 
-    srv.on('processImportFile','System',  async () => {
-        let system = await db.read(System).where({SystemID: 1});
-        let sysobj = JSON.parse(system[0].ImportFile.toString());
-        //modulName,modulDescription,featureList:[{}]    ->result initparams
-        let result = []
-        
-        sysobj.details.components.forEach(modul => {
-            let retModulName = modul.id
-            let retModulDescription = modul.description
-            let retFeatureArr = modul.features.map(m => m)
+  srv.on("processImportFile", "System", async ({ params }) => {
+    let systemKey = params[0];
+    let systemID = systemKey.SystemID;
+    let system = await db.read(System).where({ SystemID: systemID });
 
-            let retModul = {ModulName: retModulName, ModulDescription: retModulDescription, System_SystemID: 1}
-            result.push(retModul)
-        });
+    if (!system[0].ImportFile) {
+      return;
+    }
 
-        let q = db.run(INSERT(result).into(Modul)) //ist quatsch weil 'result' nicht der Datenstruktur entspricht
-         
-        
-        /*
-        try {
-            //let insertAll = await db.run (
-                sysobj.details.components.forEach(modul => {
-                    let insertModul = INSERT.into(Modul).entries({
-                        ModulName: modul.id,
-                        ModulDescription: modul.description
-                    })
-                    //let ntries = insertModul.entries()
-                    let resMod = db.run(insertModul);
-                    
-                     //let extraRes = insertModul.affectedRows();
-                    
-                    console.log('inserted modul: ' +  modul.id);
-                    //console.log();
+    let sysobj = JSON.parse(system[0].ImportFile.toString());
+    const resultOfModules = sysobj.details.components.map((modul) => {
+      let retModulName = modul.id;
+      let retModulDescription = modul.description;
+      let retModulID = cds.utils.uuid();
 
-                    modul.features.forEach(feature => {
-                        
-                        let insertFeature = INSERT.into (Feature).entries({
-                            FeatureName: feature.name,
-                            FeatureDescription: feature.title
-                        })
-                        let resFeat = db.run(insertFeature).catch(err => {console.log(err)})
+      const resultOfFeatures = modul.features.map((f) => {
+        let values = { FeatureName: f.name, FeatureDescription: f.title };
+        return values;
+      });
 
-                        
-                       //db.insert(Feature).entries({
-                       //     FeatureName: feature.name,
-                       //     FeatureDescription: feature.title
-                       // })
-                         
+      let retModul = {
+        ModulID: retModulID,
+        ModulName: retModulName,
+        ModulDescription: retModulDescription,
+        Features: resultOfFeatures,
+      };
+      return retModul;
+    });
 
-                        console.log('inserted feature: ' + feature.name)               
-                    });
-                })
-            //); 
-            
-        }
-        catch (err) {
-            console.log(err);
-        }
-        
-        */
-    })
-    
-}
+    let q = await db.run(
+      UPDATE(System, systemID).with({ Modules: resultOfModules })
+    );
+
+    return q;
+  });
+};

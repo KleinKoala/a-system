@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "command": "cds watch --with-mocks --in-memory?",
+      "name": "cds watch",
+      "request": "launch",
+      "type": "node-terminal",
+      "skipFiles": [ "<node_internals>/**" ]
+    },
+    {
       "command": "cds run --with-mocks --in-memory?",
       "name": "cds run",
       "request": "launch",

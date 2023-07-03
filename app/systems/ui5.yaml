@@ -2,3 +2,6 @@ specVersion: "2.5"
 metadata:
   name: ilc.systems
 type: application
+framework:
+  name: SAPUI5
+  version: 1.108.x
